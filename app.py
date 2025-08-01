@@ -3,7 +3,8 @@ from flask_cors import CORS
 import pandas as pd
 import joblib
 from sklearn.preprocessing import LabelEncoder
-
+import os
+import requests
 app = Flask(__name__)
 CORS(app)  # Allow frontend access
 
@@ -26,3 +27,13 @@ def predict():
 
     prediction = model.predict(df)[0]
     return jsonify({"approved": bool(prediction)})
+
+def download_model_file():
+    url = "https://drive.google.com/file/d/1bd7uWT6jjheIgxtvli-ZiqWiFz15r3ie/view?usp=sharing"
+    if not os.path.exists("loan_model.pkl"):
+        print("Downloading model...")
+        r = requests.get(url)
+        with open("loan_model.pkl", "wb") as f:
+            f.write(r.content)
+
+download_model_file()
